@@ -13,10 +13,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import xyz.monkeytong.hongbao.utils.HongbaoSignature;
-import xyz.monkeytong.hongbao.utils.PowerUtil;
 
 import java.util.List;
+
+import xyz.monkeytong.hongbao.utils.BackgroundMusic;
+import xyz.monkeytong.hongbao.utils.HongbaoSignature;
+import xyz.monkeytong.hongbao.utils.PowerUtil;
 
 public class HongbaoService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String WECHAT_DETAILS_EN = "Details";
@@ -41,6 +43,14 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
 
     private PowerUtil powerUtil;
     private SharedPreferences sharedPreferences;
+
+    private BackgroundMusic mBackgroundMusic;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mBackgroundMusic = new BackgroundMusic(getApplicationContext());
+    }
 
     /**
      * AccessibilityEvent
@@ -154,6 +164,11 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
         // Not a hongbao
         String tip = event.getText().toString();
         if (!tip.contains(WECHAT_NOTIFICATION_TIP)) return true;
+        this.powerUtil.checkScreen(this);
+        if (mBackgroundMusic != null) {
+            mBackgroundMusic.end();
+            mBackgroundMusic.playBackgroundMusic("goldfallen.mp3", false);
+        }
 
         Parcelable parcelable = event.getParcelableData();
         if (parcelable instanceof Notification) {
@@ -225,6 +240,10 @@ public class HongbaoService extends AccessibilityService implements SharedPrefer
         if (node2 != null && "android.widget.Button".equals(node2.getClassName()) && currentActivityName.contains(WECHAT_LUCKMONEY_RECEIVE_ACTIVITY)) {
             mUnpackNode = node2;
             mUnpackCount += 1;
+            if (mBackgroundMusic != null) {
+                mBackgroundMusic.end();
+                mBackgroundMusic.playBackgroundMusic("zhuanqian.mp3", false);
+            }
             return;
         }
 

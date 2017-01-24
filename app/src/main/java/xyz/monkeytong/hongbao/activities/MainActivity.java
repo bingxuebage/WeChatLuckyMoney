@@ -5,26 +5,23 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.List;
 
 import xyz.monkeytong.hongbao.R;
-import xyz.monkeytong.hongbao.fragments.GeneralSettingsFragment;
-import xyz.monkeytong.hongbao.utils.ConnectivityUtil;
-import xyz.monkeytong.hongbao.utils.UpdateTask;
-
-import com.tencent.bugly.crashreport.CrashReport;
 
 
 public class MainActivity extends Activity implements AccessibilityManager.AccessibilityStateChangeListener {
@@ -78,10 +75,6 @@ public class MainActivity extends Activity implements AccessibilityManager.Acces
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Check for update when WIFI is connected or on first time.
-        if (ConnectivityUtil.isWifi(this) || UpdateTask.count == 0)
-            new UpdateTask(this, false).update();
     }
 
     @Override
